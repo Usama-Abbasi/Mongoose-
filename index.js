@@ -6,17 +6,30 @@ const connect=mongoose.connect(url);
 
 connect.then((db)=>{
     console.log('Conencted Correctly to the Server');
-
     Dishes.create({
-        name:'Uthappizza',
+        name:'Biryani',
         description:'test'
     })
     .then((dish)=>{
         console.log(dish);
-        return Dishes.find({}).exec();
+        return Dishes.findByIdAndUpdate(dish._id,{$set:{description:'Update test'}},
+        {
+            new:true
+        })
+        .exec();
     })
-    .then((dishes)=>{
-        console.log(dishes);
+    .then((dish)=>{
+        console.log(dish);
+        dish.comments.push({
+            rating:5,
+            comment:'I\'m getting a sinking feeling',
+            author:'Usama'
+        });
+        return dish.save();
+        
+    })
+    .then((dish)=>{
+        console.log(dish);
         return Dishes.remove({});
     })
     .then(()=>{
